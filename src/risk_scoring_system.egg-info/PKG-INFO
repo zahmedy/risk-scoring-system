@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: risk-scoring-system
+Version: 0.1.0
+Summary: A risk scoring system for evaluating and managing risk assessments
+Author-email: Zayed Ahmed <zayed.ahmd@gmail.com>
+License: MIT
+Keywords: risk,scoring,assessment
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+
+# risk-scoring-system
+End-to-end ML risk assessment system 
+
+
+```risk-scoring-system/
+├─ README.md
+├─ pyproject.toml            
+├─ .gitignore
+├─ configs/
+│  ├─ base.yaml              # dataset path, target name, features
+│  └─ model.yaml             # RF params, threshold, etc.
+├─ data/
+│  ├─ raw/                   # local only (gitignored)
+│  └─ processed/             # cached cleaned splits (optional)
+├─ artifacts/
+│  ├─ model.joblib
+│  ├─ preprocessor.joblib
+│  ├─ metrics.json
+│  └─ schema.json
+├─ notebooks/
+│  ├─ 01_eda.ipynb
+│  ├─ 02_baseline_lr.ipynb
+│  ├─ 03_rf_comparison.ipynb
+│  ├─ 04_threshold_costs.ipynb
+│  └─ 05_drift_checks.ipynb
+├─ src/
+│  └─ risk_system/
+│     ├─ __init__.py
+│     ├─ config.py
+│     ├─ data.py             # load CSV, split, basic validation
+│     ├─ preprocess.py       # impute, encode, scale (for LR)
+│     ├─ train.py            # train + save artifacts
+│     ├─ evaluate.py         # metrics + plots + metrics.json
+│     ├─ explain.py          # feature importance, per-row explanation
+│     ├─ monitor.py          # drift + prediction distribution checks
+│     └─ utils.py
+├─ api/
+│  ├─ main.py                # FastAPI predict endpoint
+│  └─ schema.py              # pydantic request/response
+└─ tests/
+   ├─ test_data.py
+   ├─ test_preprocess.py
+   └─ test_model_smoke.py
+```
