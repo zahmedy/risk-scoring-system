@@ -1,0 +1,11 @@
+
+dataset:
+  source: "csv"
+  path: "data/raw/risk.csv"
+  target: "default"
+  positive_label: 1
+
+split:
+  test_size: 0.2
+  random_state: 42
+  stratify: True
