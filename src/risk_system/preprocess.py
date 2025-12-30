@@ -31,12 +31,12 @@ def make_preprocessor(numeric_features, categorical_features, model_type: str):
         raise ValueError(f"Unknown model_type: {model_type}")
     
     if model_type == "lr":
-        num_pip = Pipeline(steps=[
+        num_pipe = Pipeline(steps=[
             ("imputer", SimpleImputer(strategy="median")),
             ("scaler", StandardScaler())
         ])
     else:
-        num_pip = Pipeline(steps=[
+        num_pipe = Pipeline(steps=[
             ("imputer", SimpleImputer(strategy="median"))
         ])
 
@@ -45,9 +45,13 @@ def make_preprocessor(numeric_features, categorical_features, model_type: str):
         ("onehot", OneHotEncoder(handle_unknown="ignore"))
     ])
 
+    if len(numeric_features) == 0 and len(categorical_features) == 0:
+        raise ValueError(f"No features found")
+
+
     preprocessor = ColumnTransformer(
         transformers=[
-            ("num", num_pip, numeric_features),
+            ("num", num_pipe, numeric_features),
             ("cat", cat_pipe, categorical_features),
         ],
         remainder="drop",
