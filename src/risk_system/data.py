@@ -40,4 +40,4 @@ def train_test_split_df(X, y, cfg):
 
 def infer_schema(df: pd.DataFrame, target: str) -> dict:
      datatypes = {col: str(dtype) for col, dtype in df.dtypes.items()}
-     return {"columns": df.columns.tolist(),"dtypes": datatypes,"target": target}
+     return {"columns": df.columns.tolist(),"dtypes": datatypes, "target": target}
