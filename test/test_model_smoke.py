@@ -41,5 +41,5 @@ def test_train_smoke_writes_artifacts(tmp_path):
     assert (artifacts_dir / "metrics.json").exists()
 
     # metrics content
-    for key in ["accuracy", "confusion_matrix", "n_train", "n_test"]:
+    for key in ["accuracy", "confusion_matrix", "roc_auc", "pr_auc", "n_train", "n_test"]:
         assert key in metrics

@@ -2,9 +2,10 @@ from risk_system.preprocess import make_preprocessor, infer_feature_types
 from risk_system.data import load_csv, split_X_y, train_test_split_df, infer_schema
 
 import pandas as pd
+import numpy as np
 import joblib
 import json
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, average_precision_score
 from pathlib import Path
 
 def _to_dense(Xt):
@@ -39,13 +40,40 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     model.fit(X_train_t, y_train.to_numpy())
     y_pred = model.predict(X_test_t)
     
+    
     # Accuracy and Confusion matrix
     accuracy = accuracy_score(y_test, y_pred)
     matrix = confusion_matrix(y_test, y_pred)
-    metrics = {"accuracy": accuracy, 
-            "confusion_matrix": matrix.tolist(), 
-            "n_train": len(y_train), 
-            "n_test": len(y_test)}
+
+    roc_auc = None
+    pr_auc = None
+    proba_summary = None
+
+    if hasattr(model, "predict_proba") and len(np.unique(y_test.to_numpy())) > 1:
+        proba = model.predict_proba(X_test_t)
+        y_score = proba[:, 1]
+        roc_auc = roc_auc_score(y_test, y_score)
+        pr_auc = average_precision_score(y_test, y_score)
+        proba_summary = {
+            "min": float(y_score.min()),
+            "mean": float(y_score.mean()),
+            "max": float(y_score.max())
+        }
+    
+    pos_rate_test = float(np.mean(y_test.to_numpy()))
+    pos_rate_train = float(np.mean(y_train.to_numpy()))
+
+    metrics = {
+        "accuracy": float(accuracy),
+        "roc_auc": None if roc_auc is None else float(roc_auc),
+        "pr_auc": None if pr_auc is None else float(pr_auc),              # optional
+        "confusion_matrix": matrix.tolist(),
+        "n_train": int(len(y_train)),
+        "n_test": int(len(y_test)),
+        "pos_rate_train": pos_rate_train,
+        "pos_rate_test": pos_rate_test,
+        "proba_summary": proba_summary,
+    }
 
     # Save artifacts
     Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
