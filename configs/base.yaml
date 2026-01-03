@@ -4,6 +4,7 @@ dataset:
   path: "data/raw/risk.csv"
   target: "default"
   positive_label: 1
+  target: "class"
 
 split:
   test_size: 0.2
