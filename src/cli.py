@@ -22,18 +22,15 @@ def main():
 
     args = parser.parse_args()
 
-    
-
     if args.command == "train":
         cfg_base = load_yaml(args.base)
         cfg_model = load_yaml(args.model)
+        train(cfg_base, cfg_model, artifacts_dir=args.artifact_dir)
 
-        train(cfg_base, cfg_model)
-
-    if args.command == "evaluate":
+    elif args.command == "evaluate":
         cfg_base = load_yaml(args.base)
         policy = load_yaml(args.policy)
-        evaluate(cfg_base, artifacts_dir=args.artifacts_dir, threshold=policy['threshold'])
+        evaluate(cfg_base, artifacts_dir=args.artifact_dir, threshold=policy['threshold'])
 
 if __name__ == "__main__":
     main()
