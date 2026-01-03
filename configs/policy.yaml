@@ -1,0 +1,5 @@
+threshold: 0.35
+
+costs:
+  fp: 1.0
+  fn: 5.0
