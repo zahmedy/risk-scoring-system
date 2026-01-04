@@ -55,6 +55,8 @@ def evaluate(cfg_base, artifacts_dir="artifacts",
     
     df = load_csv(cfg_base)
     X,y = split_X_y(df, target=cfg_base["dataset"]["target"])
+    le = joblib.load(f"{artifacts_dir}/label_encoder.joblib")
+    y_enc = le.transform(y)
 
     Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
 
@@ -73,7 +75,7 @@ def evaluate(cfg_base, artifacts_dir="artifacts",
             threshold = float(policy["threshold"])
         elif mode == "search":
             threshold_search = find_best_threshold(
-                y_true=y,
+                y_true=y_enc,
                 scores=scores,
                 objective=policy.get("objective", "min_cost"),
                 costs=policy.get("costs"),
@@ -85,7 +87,7 @@ def evaluate(cfg_base, artifacts_dir="artifacts",
 
 
     y_pred = apply_threshold(scores, threshold)
-    metrics = compute_metrics(y, y_pred, scores)
+    metrics = compute_metrics(y_enc, y_pred, scores)
     metrics["threshold_used"] = float(threshold)
     metrics["threshold_search"] = threshold_search
 

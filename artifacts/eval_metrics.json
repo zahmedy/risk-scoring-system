@@ -1,0 +1,24 @@
+{
+  "accuracy": 0.875,
+  "precision": 0.8545006165228114,
+  "recall": 0.99,
+  "f1": 0.9172733289212442,
+  "confusion_matrix": [
+    [
+      182,
+      118
+    ],
+    [
+      7,
+      693
+    ]
+  ],
+  "roc_auc": 0.9593,
+  "pr_auc": 0.9809384451064291,
+  "threshold_used": 0.48,
+  "threshold_search": {
+    "threshold": 0.48,
+    "objective": "min_cost",
+    "value": 153.0
+  }
+}
