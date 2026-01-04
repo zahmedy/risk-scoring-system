@@ -6,7 +6,6 @@ import numpy as np
 import joblib
 import json
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, average_precision_score
-from sklearn.preprocessing import LabelEncoder
 from pathlib import Path
 
 def _to_dense(Xt) -> np.ndarray:
@@ -28,9 +27,11 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # Load & split 
     df = load_csv(cfg_base)
     X, y = split_X_y(df, target=cfg_base["dataset"]["target"])
-    le = LabelEncoder()
-    y_enc = le.fit_transform(y)
-    X_train, X_test, y_train, y_test = train_test_split_df(X, y_enc, cfg_base)
+    X_train, X_test, y_train, y_test = train_test_split_df(X, y, cfg_base)
+
+    # Encoding
+    y_train = (y_train == "bad").astype(int).to_numpy()
+    y_test  = (y_test == "bad").astype(int).to_numpy()
 
     # Features preprocessing
     num_features, cat_features = infer_feature_types(X_train)
@@ -81,7 +82,6 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # Save artifacts
     Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
     joblib.dump(preprocessor, f"{artifacts_dir}/preprocessor.joblib")
-    joblib.dump(le, f"{artifacts_dir}/label_encoder.joblib")
     joblib.dump(model, f"{artifacts_dir}/model.joblib")
     schema = infer_schema(
         X_train, 

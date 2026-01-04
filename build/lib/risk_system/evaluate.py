@@ -55,8 +55,7 @@ def evaluate(cfg_base, artifacts_dir="artifacts",
     
     df = load_csv(cfg_base)
     X,y = split_X_y(df, target=cfg_base["dataset"]["target"])
-    le = joblib.load(f"{artifacts_dir}/label_encoder.joblib")
-    y_enc = le.transform(y)
+    y_enc = (y == "bad").astype(int).to_numpy()
 
     Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
 
