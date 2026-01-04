@@ -30,7 +30,7 @@ def main():
     elif args.command == "evaluate":
         cfg_base = load_yaml(args.base)
         policy = load_yaml(args.policy)
-        evaluate(cfg_base, artifacts_dir=args.artifact_dir, threshold=policy['threshold'])
+        evaluate(cfg_base, artifacts_dir=args.artifact_dir, policy=policy)
 
 if __name__ == "__main__":
     main()

@@ -48,7 +48,11 @@ def compute_metrics(y_true, y_pred, scores=None) -> dict:
     }
     return metrics
 
-def evaluate(cfg_base, artifacts_dir="artifacts", threshold=0.5) -> dict:
+def evaluate(cfg_base, artifacts_dir="artifacts", 
+             threshold=0.5, 
+             policy: dict | None = None
+) -> dict:
+    
     df = load_csv(cfg_base)
     X,y = split_X_y(df, target=cfg_base["dataset"]["target"])
 
@@ -60,9 +64,31 @@ def evaluate(cfg_base, artifacts_dir="artifacts", threshold=0.5) -> dict:
     Xt = _to_dense(preprocessor.transform(X))
     scores = predict_scores(model, Xt)
     scores = np.asarray(scores, dtype=float)
+
+    threshold_search = None
+
+    if policy is not None:
+        mode = policy.get("mode", "fixed")
+        if mode == "fixed":
+            threshold = float(policy["threshold"])
+        elif mode == "search":
+            threshold_search = find_best_threshold(
+                y_true=y,
+                scores=scores,
+                objective=policy.get("objective", "min_cost"),
+                costs=policy.get("costs"),
+                grid=policy.get("grid"),
+            )
+            threshold = float(threshold_search["threshold"])
+        else:
+            raise ValueError(f"Unknown policy mode: {mode}")
+
+
     y_pred = apply_threshold(scores, threshold)
-    
-    metrics = compute_metrics(y, y_pred ,scores)
+    metrics = compute_metrics(y, y_pred, scores)
+    metrics["threshold_used"] = float(threshold)
+    metrics["threshold_search"] = threshold_search
+
 
     with open(f"{artifacts_dir}/eval_metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
