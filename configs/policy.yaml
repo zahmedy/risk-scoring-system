@@ -1,5 +1,12 @@
-threshold: 0.35
+mode: search          # fixed | search
+threshold: 0.5        # used if mode=fixed
 
+objective: min_cost   # min_cost | max_f1
 costs:
   fp: 1.0
   fn: 5.0
+
+grid:
+  start: 0.01
+  stop: 0.99
+  step: 0.01

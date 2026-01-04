@@ -68,3 +68,56 @@ def evaluate(cfg_base, artifacts_dir="artifacts", threshold=0.5) -> dict:
         json.dump(metrics, f, indent=2)
 
     return metrics
+
+def find_best_threshold(
+    y_true,
+    scores: np.ndarray,
+    objective: str = "min_cost",
+    costs: dict | None = None,
+    grid: dict | None = None,
+) -> dict:
+    if grid is None:
+        raise ValueError("grid is required")
+
+    start = float(grid.get("start", 0.01))
+    stop = float(grid.get("stop", 0.99))
+    step = float(grid.get("step", 0.01))
+    thresholds = np.arange(start, stop + 1e-12, step)
+
+    if objective == "min_cost":
+        if costs is None:
+            costs = {"fp": 1.0, "fn": 1.0}
+        fp_cost = float(costs["fp"])
+        fn_cost = float(costs["fn"])
+
+        best_value = float("inf")
+        best_threshold = float(thresholds[0])
+
+        for t in thresholds:
+            y_pred = apply_threshold(scores, threshold=float(t))
+            tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+            cost = fp_cost * fp + fn_cost * fn
+            if cost < best_value:
+                best_value = float(cost)
+                best_threshold = float(t)
+
+    elif objective == "max_f1":
+        best_value = float("-inf")
+        best_threshold = float(thresholds[0])
+
+        for t in thresholds:
+            y_pred = apply_threshold(scores, threshold=float(t))
+            f1 = f1_score(y_true, y_pred, zero_division=0)
+            if f1 > best_value:
+                best_value = float(f1)
+                best_threshold = float(t)
+
+    else:
+        raise ValueError(f"Unknown objective: {objective}")
+
+    return {
+        "threshold": best_threshold,
+        "objective": objective,
+        "value": best_value,
+    }
+
