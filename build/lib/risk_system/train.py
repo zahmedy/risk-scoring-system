@@ -6,9 +6,10 @@ import numpy as np
 import joblib
 import json
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, average_precision_score
+from sklearn.preprocessing import LabelEncoder
 from pathlib import Path
 
-def _to_dense(Xt):
+def _to_dense(Xt) -> np.ndarray:
     if hasattr(Xt, "toarray"):
         return Xt.toarray()
     return Xt
@@ -27,7 +28,9 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # Load & split 
     df = load_csv(cfg_base)
     X, y = split_X_y(df, target=cfg_base["dataset"]["target"])
-    X_train, X_test, y_train, y_test = train_test_split_df(X, y, cfg_base)
+    le = LabelEncoder()
+    y_enc = le.fit_transform(y)
+    X_train, X_test, y_train, y_test = train_test_split_df(X, y_enc, cfg_base)
 
     # Features preprocessing
     num_features, cat_features = infer_feature_types(X_train)
@@ -37,7 +40,7 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     
     # Build model, fit and predict 
     model = _build_model(cfg_model)
-    model.fit(X_train_t, y_train.to_numpy())
+    model.fit(X_train_t, y_train)
     y_pred = model.predict(X_test_t)
     
     
@@ -49,7 +52,7 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     pr_auc = None
     proba_summary = None
 
-    if hasattr(model, "predict_proba") and len(np.unique(y_test.to_numpy())) > 1:
+    if hasattr(model, "predict_proba") and len(np.unique(y_test)) > 1:
         proba = model.predict_proba(X_test_t)
         y_score = proba[:, 1]
         roc_auc = roc_auc_score(y_test, y_score)
@@ -60,8 +63,8 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
             "max": float(y_score.max())
         }
     
-    pos_rate_test = float(np.mean(y_test.to_numpy()))
-    pos_rate_train = float(np.mean(y_train.to_numpy()))
+    pos_rate_test = float(np.mean(y_test))
+    pos_rate_train = float(np.mean(y_train))
 
     metrics = {
         "accuracy": float(accuracy),
@@ -78,9 +81,10 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # Save artifacts
     Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
     joblib.dump(preprocessor, f"{artifacts_dir}/preprocessor.joblib")
+    joblib.dump(le, f"{artifacts_dir}/label_encoder.joblib")
     joblib.dump(model, f"{artifacts_dir}/model.joblib")
     schema = infer_schema(
-        X_train.join(y_train), 
+        X_train, 
         target=cfg_base["dataset"]["target"]
     )
 
