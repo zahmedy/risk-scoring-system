@@ -5,7 +5,8 @@ import pandas as pd
 import numpy as np
 import joblib
 import json
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, average_precision_score
+from sklearn.metrics import (accuracy_score, confusion_matrix, roc_auc_score, 
+                             average_precision_score)
 from pathlib import Path
 
 def _to_dense(Xt) -> np.ndarray:

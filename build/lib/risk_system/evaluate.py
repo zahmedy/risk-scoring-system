@@ -14,6 +14,14 @@ from risk_system.train import _to_dense
 def predict_scores(model, X) -> np.ndarray:
     if hasattr(model, "predict_proba"):
         proba = model.predict_proba(X)
+        # Assuming:
+        # 1) binary classification
+        #    Multi would break semantics
+        # 2) proba[:, 1] = P(bad | X) inverting labels would break semantic
+        # 3) Probability calibration is “good enough”
+        #    scores are usable for thresholding
+        # 4) Model implements predict_proba correctly 
+        #    returned values sum to 1
         return proba[:, 1].astype(float)
     
     pred = model.predict(X)
