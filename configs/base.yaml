@@ -1,7 +1,7 @@
 
 dataset:
   source: "csv"
-  path: "data/raw/risk1.csv"
+  path: "data/raw/risk.csv"
   positive_label: 1
   target: "class"
 
