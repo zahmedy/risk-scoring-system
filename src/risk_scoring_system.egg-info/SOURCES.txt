@@ -18,5 +18,6 @@ src/risk_system/utils.py
 test/test_cli_smoke.py
 test/test_data.py
 test/test_model_smoke.py
+test/test_monitor.py
 test/test_preprocess.py
 test/test_threshold_search.py

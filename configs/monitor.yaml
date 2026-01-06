@@ -1,0 +1,18 @@
+baseline_stats_path: artifacts/baseline_stats.json
+
+alerts:
+  psi_numeric_warn: 0.10
+  psi_numeric_crit: 0.20
+  psi_categorical_warn: 0.10
+  psi_categorical_crit: 0.20
+  psi_score_warn: 0.10
+  psi_score_crit: 0.20
+
+categorical:
+  top_k: 20
+
+numeric:
+  n_bins: 10
+
+score:
+  n_bins: 10
