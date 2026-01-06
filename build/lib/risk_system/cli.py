@@ -13,6 +13,7 @@ def main():
     train_parser = subparser.add_parser("train", help="Train the model")
     train_parser.add_argument("--base", help="Base config", default="configs/base.yaml")
     train_parser.add_argument("--model", help="Model config", default="configs/model.yaml")
+    train_parser.add_argument("--monitor", help="Monitor config", default="configs/monitor.yaml")
     train_parser.add_argument("--artifact-dir", help="Dirctory to store training artifacts", default="artifacts")
 
     eval_parser = subparser.add_parser("evaluate", help="Evaluate model")
@@ -25,7 +26,8 @@ def main():
     if args.command == "train":
         cfg_base = load_yaml(args.base)
         cfg_model = load_yaml(args.model)
-        train(cfg_base, cfg_model, artifacts_dir=args.artifact_dir)
+        cfg_monitor = load_yaml(args.monitor)
+        train(cfg_base, cfg_model, cfg_monitor, artifacts_dir=args.artifact_dir)
 
     elif args.command == "evaluate":
         cfg_base = load_yaml(args.base)

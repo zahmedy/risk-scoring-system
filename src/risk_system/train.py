@@ -6,6 +6,7 @@ from risk_system.monitor import (
     categorical_proportions,
 )
 from risk_system.evaluate import predict_scores
+from risk_system.utils import to_dense
 
 import pandas as pd
 import numpy as np
@@ -14,12 +15,6 @@ import json
 from sklearn.metrics import (accuracy_score, confusion_matrix, roc_auc_score, 
                              average_precision_score)
 from pathlib import Path
-
-
-def _to_dense(Xt) -> np.ndarray:
-    if hasattr(Xt, "toarray"):
-        return Xt.toarray()
-    return Xt
 
 
 def _build_model(cfg_model: dict):
@@ -45,8 +40,8 @@ def train(cfg_base: dict, cfg_model: dict, cfg_monitor: dict, artifacts_dir: str
     # Features preprocessing
     num_features, cat_features = infer_feature_types(X_train)
     preprocessor = make_preprocessor(num_features, cat_features, model_type=cfg_model["type"])
-    X_train_t = _to_dense(preprocessor.fit_transform(X_train))
-    X_test_t = _to_dense(preprocessor.transform(X_test))
+    X_train_t = to_dense(preprocessor.fit_transform(X_train))
+    X_test_t = to_dense(preprocessor.transform(X_test))
     
     # Build model, fit and predict 
     model = _build_model(cfg_model)
