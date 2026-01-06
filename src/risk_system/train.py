@@ -1,5 +1,11 @@
 from risk_system.preprocess import make_preprocessor, infer_feature_types
 from risk_system.data import load_csv, split_X_y, train_test_split_df, infer_schema
+from risk_system.monitor import (
+    make_numeric_bins,
+    histogram_proportions,
+    categorical_proportions,
+)
+from risk_system.evaluate import predict_scores
 
 import pandas as pd
 import numpy as np
@@ -9,10 +15,12 @@ from sklearn.metrics import (accuracy_score, confusion_matrix, roc_auc_score,
                              average_precision_score)
 from pathlib import Path
 
+
 def _to_dense(Xt) -> np.ndarray:
     if hasattr(Xt, "toarray"):
         return Xt.toarray()
     return Xt
+
 
 def _build_model(cfg_model: dict):
     if cfg_model["type"] != "rf":
@@ -23,7 +31,7 @@ def _build_model(cfg_model: dict):
     else:
         raise ValueError(f"Unsupported implementation: {cfg_model['implementation']}")
 
-
+############### TRAIN #################
 def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> dict:
     # Load & split 
     df = load_csv(cfg_base)
@@ -43,8 +51,30 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # Build model, fit and predict 
     model = _build_model(cfg_model)
     model.fit(X_train_t, y_train)
+
+    # get train scores for baseline score drift
+    scores_train = predict_scores(model, X_train_t)
+
+    # load monitor config (or pass it in)
+    # simplest: hardcode defaults if you don’t have monitor.yaml yet
+    monitor_cfg = cfg_base.get("monitor", {
+        "numeric": {"n_bins": 10},
+        "categorical": {"top_k": 20},
+        "score": {"n_bins": 10},
+    })
+
+    baseline_stats = build_baseline_stats(
+        X_train=X_train,
+        scores_train=scores_train,
+        numeric_features=num_features,
+        categorical_features=cat_features,
+        monitor_cfg=monitor_cfg,
+    )
+
+    with open(Path(artifacts_dir) / "baseline_stats.json", "w") as f:
+        json.dump(baseline_stats, f, indent=2)
+
     y_pred = model.predict(X_test_t)
-    
     
     # Accuracy and Confusion matrix
     accuracy = accuracy_score(y_test, y_pred)
@@ -96,6 +126,46 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
         json.dump(metrics, f, indent=2)
 
     return metrics
+############### END TRAIN #################
 
+def build_baseline_stats(
+    X_train,
+    scores_train,
+    numeric_features,
+    categorical_features,
+    monitor_cfg: dict,
+) -> dict:
+    n_bins_num = int(monitor_cfg["numeric"]["n_bins"])
+    top_k = int(monitor_cfg["categorical"]["top_k"])
+    n_bins_score = int(monitor_cfg["score"]["n_bins"])
 
+    baseline = {"numeric": {}, "categorical": {}, "score": {}}
+
+    # --- numeric features ---
+    for col in numeric_features:
+        x = X_train[col].to_numpy()
+        edges = make_numeric_bins(x, n_bins=n_bins_num)
+        props = histogram_proportions(x, edges)
+        baseline["numeric"][col] = {
+            "bin_edges": edges.tolist(),
+            "proportions": props.tolist(),
+        }
+
+    # --- categorical features ---
+    for col in categorical_features:
+        props_map = categorical_proportions(X_train[col], top_k=top_k)
+        baseline["categorical"][col] = {"proportions": props_map}
+
+    # --- score distribution ---
+    # fixed edges is fine for scores (0..1), but we’ll use quantile edges for consistency
+    edges_s = make_numeric_bins(scores_train, n_bins=n_bins_score)
+    props_s = histogram_proportions(scores_train, edges_s)
+    baseline["score"] = {
+        "bin_edges": edges_s.tolist(),
+        "proportions": props_s.tolist(),
+    }
+
+    baseline["n_train_rows"] = int(len(X_train))
+
+    return baseline
 
