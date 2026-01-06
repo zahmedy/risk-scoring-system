@@ -1,7 +1,6 @@
 {
   "columns": [
     "checking_status",
-    "duration",
     "credit_history",
     "purpose",
     "credit_amount",
@@ -19,11 +18,11 @@
     "job",
     "num_dependents",
     "own_telephone",
-    "foreign_worker"
+    "foreign_worker",
+    "new"
   ],
   "dtypes": {
     "checking_status": "object",
-    "duration": "int64",
     "credit_history": "object",
     "purpose": "object",
     "credit_amount": "int64",
@@ -41,7 +40,8 @@
     "job": "object",
     "num_dependents": "int64",
     "own_telephone": "object",
-    "foreign_worker": "object"
+    "foreign_worker": "object",
+    "new": "object"
   },
   "target": "class"
 }

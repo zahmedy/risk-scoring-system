@@ -8,7 +8,7 @@ from sklearn.metrics import (
 )
 
 from risk_system.data import load_csv, split_X_y 
-from risk_system.train import to_dense
+from risk_system.utils import to_dense
 
 
 def predict_scores(model, X) -> np.ndarray:

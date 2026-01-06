@@ -1,0 +1,245 @@
+{
+  "numeric": {
+    "credit_amount": {
+      "bin_edges": [
+        250.0,
+        913.7,
+        1236.8,
+        1443.4,
+        1870.0,
+        2246.5,
+        2770.2000000000007,
+        3509.9,
+        4526.8,
+        7063.200000000002,
+        18424.0
+      ],
+      "proportions": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    "installment_commitment": {
+      "bin_edges": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "proportions": [
+        0.13125,
+        0.225,
+        0.64375
+      ]
+    },
+    "residence_since": {
+      "bin_edges": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "proportions": [
+        0.13375,
+        0.30625,
+        0.56
+      ]
+    },
+    "age": {
+      "bin_edges": [
+        20.0,
+        23.0,
+        26.0,
+        28.0,
+        30.0,
+        33.0,
+        36.0,
+        39.0,
+        44.0,
+        52.0,
+        75.0
+      ],
+      "proportions": [
+        0.06,
+        0.13375,
+        0.10125,
+        0.0825,
+        0.11375,
+        0.105,
+        0.09375,
+        0.1025,
+        0.105,
+        0.1025
+      ]
+    },
+    "existing_credits": {
+      "bin_edges": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "proportions": [
+        0.62625,
+        0.37375
+      ]
+    },
+    "num_dependents": {
+      "bin_edges": [
+        1.0,
+        2.0
+      ],
+      "proportions": [
+        1.0
+      ]
+    }
+  },
+  "categorical": {
+    "checking_status": {
+      "proportions": {
+        "'no checking'": 0.40375,
+        "'<0'": 0.28125,
+        "'0<=X<200'": 0.25125,
+        "'>=200'": 0.06375
+      }
+    },
+    "credit_history": {
+      "proportions": {
+        "'existing paid'": 0.53125,
+        "'critical/other existing credit'": 0.3075,
+        "'delayed previously'": 0.07875,
+        "'no credits/all paid'": 0.0425,
+        "'all paid'": 0.04
+      }
+    },
+    "purpose": {
+      "proportions": {
+        "radio/tv": 0.28125,
+        "'new car'": 0.23125,
+        "furniture/equipment": 0.1875,
+        "'used car'": 0.1025,
+        "business": 0.0975,
+        "education": 0.04625,
+        "repairs": 0.025,
+        "'domestic appliance'": 0.01,
+        "other": 0.01,
+        "retraining": 0.00875
+      }
+    },
+    "savings_status": {
+      "proportions": {
+        "'<100'": 0.6,
+        "'no known savings'": 0.18625,
+        "'100<=X<500'": 0.10875,
+        "'500<=X<1000'": 0.06,
+        "'>=1000'": 0.045
+      }
+    },
+    "employment": {
+      "proportions": {
+        "'1<=X<4'": 0.33125,
+        "'>=7'": 0.26,
+        "'4<=X<7'": 0.17875,
+        "'<1'": 0.17625,
+        "unemployed": 0.05375
+      }
+    },
+    "personal_status": {
+      "proportions": {
+        "'male single'": 0.545,
+        "'female div/dep/mar'": 0.3125,
+        "'male mar/wid'": 0.09,
+        "'male div/sep'": 0.0525
+      }
+    },
+    "other_parties": {
+      "proportions": {
+        "none": 0.90375,
+        "guarantor": 0.05125,
+        "'co applicant'": 0.045
+      }
+    },
+    "property_magnitude": {
+      "proportions": {
+        "car": 0.32875,
+        "'real estate'": 0.29125,
+        "'life insurance'": 0.23625,
+        "'no known property'": 0.14375
+      }
+    },
+    "other_payment_plans": {
+      "proportions": {
+        "none": 0.81875,
+        "bank": 0.13,
+        "stores": 0.05125
+      }
+    },
+    "housing": {
+      "proportions": {
+        "own": 0.72375,
+        "rent": 0.17375,
+        "'for free'": 0.1025
+      }
+    },
+    "job": {
+      "proportions": {
+        "skilled": 0.63375,
+        "'unskilled resident'": 0.19875,
+        "'high qualif/self emp/mgmt'": 0.14625,
+        "'unemp/unskilled non res'": 0.02125
+      }
+    },
+    "own_telephone": {
+      "proportions": {
+        "none": 0.59875,
+        "yes": 0.40125
+      }
+    },
+    "foreign_worker": {
+      "proportions": {
+        "yes": 0.965,
+        "no": 0.035
+      }
+    },
+    "new": {
+      "proportions": {
+        "new": 1.0
+      }
+    }
+  },
+  "score": {
+    "bin_edges": [
+      0.013788000146070617,
+      0.07162381098331125,
+      0.11138343361808409,
+      0.1561024495843629,
+      0.2064914649265263,
+      0.25638994108790225,
+      0.3137132642964062,
+      0.3882133915687668,
+      0.5137199703266349,
+      0.5992626647967446,
+      0.8149736707233434
+    ],
+    "proportions": [
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1
+    ]
+  },
+  "n_train_rows": 800
+}
