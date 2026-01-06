@@ -8,7 +8,7 @@ from sklearn.metrics import (
 )
 
 from risk_system.data import load_csv, split_X_y 
-from risk_system.train import _to_dense
+from risk_system.train import to_dense
 
 
 def predict_scores(model, X) -> np.ndarray:
@@ -70,7 +70,7 @@ def evaluate(cfg_base, artifacts_dir="artifacts",
     model = joblib.load(f"{artifacts_dir}/model.joblib")
     preprocessor = joblib.load(artifacts_dir+"/preprocessor.joblib")
 
-    Xt = _to_dense(preprocessor.transform(X))
+    Xt = to_dense(preprocessor.transform(X))
     scores = predict_scores(model, Xt)
     scores = np.asarray(scores, dtype=float)
 
