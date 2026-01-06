@@ -32,7 +32,7 @@ def _build_model(cfg_model: dict):
         raise ValueError(f"Unsupported implementation: {cfg_model['implementation']}")
 
 ############### TRAIN #################
-def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> dict:
+def train(cfg_base: dict, cfg_model: dict, cfg_monitor: dict, artifacts_dir: str = "artifacts") -> dict:
     # Load & split 
     df = load_csv(cfg_base)
     X, y = split_X_y(df, target=cfg_base["dataset"]["target"])
@@ -55,20 +55,12 @@ def train(cfg_base: dict, cfg_model: dict, artifacts_dir: str = "artifacts") -> 
     # get train scores for baseline score drift
     scores_train = predict_scores(model, X_train_t)
 
-    # load monitor config (or pass it in)
-    # simplest: hardcode defaults if you don’t have monitor.yaml yet
-    monitor_cfg = cfg_base.get("monitor", {
-        "numeric": {"n_bins": 10},
-        "categorical": {"top_k": 20},
-        "score": {"n_bins": 10},
-    })
-
     baseline_stats = build_baseline_stats(
         X_train=X_train,
         scores_train=scores_train,
         numeric_features=num_features,
         categorical_features=cat_features,
-        monitor_cfg=monitor_cfg,
+        monitor_cfg=cfg_monitor,
     )
 
     with open(Path(artifacts_dir) / "baseline_stats.json", "w") as f:
