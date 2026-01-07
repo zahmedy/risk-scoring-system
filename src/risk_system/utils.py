@@ -1,5 +1,11 @@
 import yaml
 import numpy as np
+from risk_system.evaluate import predict_scores
+
+def to_dense(Xt) -> np.ndarray:
+    if hasattr(Xt, "toarray"):
+        return Xt.toarray()
+    return Xt
 
 def load_config(config_path="configs/base.yaml"):
     with open(config_path, 'r') as file:
@@ -8,7 +14,4 @@ def load_config(config_path="configs/base.yaml"):
 
     return config
 
-def to_dense(Xt) -> np.ndarray:
-    if hasattr(Xt, "toarray"):
-        return Xt.toarray()
-    return Xt
+    

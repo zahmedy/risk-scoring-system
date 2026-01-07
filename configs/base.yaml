@@ -9,3 +9,14 @@ split:
   test_size: 0.2
   random_state: 42
   stratify: true
+
+decision_thresholds:
+  approve_max_pd: 0.10
+  review_max_pd: 0.20
+
+score_mapping:
+  min_score: 300
+  max_score: 850
+  eps: 1e-6
+  offset: 600
+  factor: 50
