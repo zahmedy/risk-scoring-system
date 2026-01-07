@@ -29,7 +29,7 @@ app = FastAPI(title="Risk Scoring API", version="0.1.0", lifespan=lifespan)
 def health():
     return {"status": "OK"}
 
-@app.get("/score")
+@app.post("/score")
 def score(req: ScoreRequest):
     try:
         result = score_one(req.applicant)

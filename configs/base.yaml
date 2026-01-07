@@ -17,6 +17,6 @@ decision_thresholds:
 score_mapping:
   min_score: 300
   max_score: 850
-  eps: 1e-6
+  eps: 0.000001
   offset: 600
   factor: 50

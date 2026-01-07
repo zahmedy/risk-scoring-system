@@ -1,6 +1,5 @@
 import yaml
 import numpy as np
-from risk_system.evaluate import predict_scores
 
 def to_dense(Xt) -> np.ndarray:
     if hasattr(Xt, "toarray"):
