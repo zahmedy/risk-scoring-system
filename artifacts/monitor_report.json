@@ -1,0 +1,93 @@
+{
+  "summary": {
+    "overall_status": "OK",
+    "n_rows": 1000,
+    "avg_score": 0.30291044906592085,
+    "score_psi": 0.015968092756514347,
+    "score_status": "OK"
+  },
+  "numeric": {
+    "duration": {
+      "psi": 0.0021003159062120045,
+      "status": "OK"
+    },
+    "credit_amount": {
+      "psi": 0.003268912714070374,
+      "status": "OK"
+    },
+    "installment_commitment": {
+      "psi": 0.0005078013458727818,
+      "status": "OK"
+    },
+    "residence_since": {
+      "psi": 0.00012374392673160926,
+      "status": "OK"
+    },
+    "age": {
+      "psi": 0.0012242599014625894,
+      "status": "OK"
+    },
+    "existing_credits": {
+      "psi": 0.00019538581316913724,
+      "status": "OK"
+    },
+    "num_dependents": {
+      "psi": 0.0,
+      "status": "OK"
+    }
+  },
+  "categorical": {
+    "checking_status": {
+      "psi": 0.0016482209800682305,
+      "status": "OK"
+    },
+    "credit_history": {
+      "psi": 0.0037086511920999916,
+      "status": "OK"
+    },
+    "purpose": {
+      "psi": 0.0016845981480654562,
+      "status": "OK"
+    },
+    "savings_status": {
+      "psi": 0.0007245161398135909,
+      "status": "OK"
+    },
+    "employment": {
+      "psi": 0.001779969869887556,
+      "status": "OK"
+    },
+    "personal_status": {
+      "psi": 0.00020248212995860494,
+      "status": "OK"
+    },
+    "other_parties": {
+      "psi": 0.0003949242167732563,
+      "status": "OK"
+    },
+    "property_magnitude": {
+      "psi": 0.0011136541771440852,
+      "status": "OK"
+    },
+    "other_payment_plans": {
+      "psi": 0.0009980069128848112,
+      "status": "OK"
+    },
+    "housing": {
+      "psi": 0.0006046295854136684,
+      "status": "OK"
+    },
+    "job": {
+      "psi": 7.692232134847731e-05,
+      "status": "OK"
+    },
+    "own_telephone": {
+      "psi": 3.144263423592498e-05,
+      "status": "OK"
+    },
+    "foreign_worker": {
+      "psi": 0.00011528908139134161,
+      "status": "OK"
+    }
+  }
+}
