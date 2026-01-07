@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 
 from risk_system.evaluate import predict_scores
-from risk_system.artifacts import load_artifacts
+from risk_system.artifacts import get_artifacts
 
 def score_one(applicant: dict) -> dict:
-    model, preprocessor, cfg_base = load_artifacts()
+    model, preprocessor, cfg_base = get_artifacts()
 
     df = pd.DataFrame([applicant])
     X = preprocessor.transform(df)
@@ -19,11 +19,11 @@ def score_one(applicant: dict) -> dict:
 
     pd_clamped = min(max(prob_d, eps), 1-eps)
     odds = (1 - pd_clamped) / pd_clamped
-    score = offset + factor * np.log(odds)
 
     min_score = cfg_base["score_mapping"]["min_score"]
     max_score = cfg_base["score_mapping"]["max_score"]
 
+    score = offset + factor * np.log(odds)
     score = max(min_score, min(score, max_score))
     score = int(round(score))
 
