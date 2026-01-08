@@ -53,28 +53,44 @@ Includes schema-based validation, deterministic score mapping, decision threshol
 
 ## Architecture
 
-Client
-│
-▼
-FastAPI (/score)
-│
-├─ API key check (optional)
-├─ Schema validation (required fields, types)
-│
-▼
-Preprocessor (joblib)
-│
-▼
-Model inference
-│
-▼
-Probability of Default (PD)
-│
-├─ PD → credit-style score (300–850)
-└─ Decision thresholds (approve / review / decline)
-│
-▼
-JSON response (+ latency)
+```
++---------+    HTTP JSON     +---------------------------+
+| Client  | ----------------> | FastAPI (/score, /health) |
++---------+                  +---------------------------+
+                                      | load_artifacts on startup
+                                      v
+                            +---------------------------+
+                            | Artifacts (model +        |
+                            | preprocessor + config)    |
+                            +---------------------------+
+                                      |
+                                      v
+                            +---------------------------+
+                            | Input validation &        |
+                            | optional API key check    |
+                            +---------------------------+
+                                      |
+                                      v
+                            +---------------------------+
+                            | Preprocessor (joblib)     |
+                            +---------------------------+
+                                      |
+                                      v
+                            +---------------------------+
+                            | Model inference (RF)      |
+                            +---------------------------+
+                                      |
+                                      v
+                            +---------------------------+
+                            | PD -> credit score (300–850) |
+                            | + decision (approve/review/decline) |
+                            +---------------------------+
+                                      |
+                                      v
+                            +---------------------------+
+                            | JSON response (+ latency) |
+                            +---------------------------+
+```
 
 **Design goals**
 - Deterministic inference (no side effects)
@@ -146,4 +162,3 @@ The service supports environment-based configuration and optional API key protec
   - scikit-learn pickle version mismatches
   - custom model import paths in containers
   - ARM vs x86_64 container architecture on AWS
-
