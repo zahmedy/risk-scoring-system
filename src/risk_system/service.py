@@ -3,9 +3,19 @@ import pandas as pd
 
 from risk_system.evaluate import predict_scores
 from risk_system.artifacts import get_artifacts
+from risk_system.exceptions import BadRequestError
 
 def score_one(applicant: dict) -> dict:
-    model, preprocessor, cfg_base = get_artifacts()
+    model, preprocessor, cfg_base, schema = get_artifacts()
+
+    required_features = list(schema["columns"].keys())
+
+    missing = [f for f in required_features if f not in applicant]
+    if missing:
+        raise BadRequestError(
+            "Missing required fields.",
+            missing_features=missing
+        )
 
     df = pd.DataFrame([applicant])
     X = preprocessor.transform(df)
