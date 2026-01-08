@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Any, Dict, Optional 
 import time
 import logging
+import os
 
 from risk_system.artifacts import load_artifacts, get_artifacts
 from risk_system.service import score_one
@@ -30,6 +31,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Risk Scoring API", version="0.1.0", lifespan=lifespan)
 
+
+API_KEY = os.getenv("API_KEY")
+
+def require_api_key(x_api_key: str = Header(None)):
+    if not API_KEY:
+        # Fail closed in cloud; you can relax this for local if you want
+        raise HTTPException(status_code=500, detail="API key not configured")
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
 @app.exception_handler(BadRequestError)
 async def bad_request_handler(request: Request, exc: BadRequestError):
     logger.info("Bad request: %s", exc, exc_info=True)
@@ -83,7 +94,7 @@ def health():
     return {"status": "OK"}
 
 @app.post("/score")
-def score(req: ScoreRequest):
+def score(req: ScoreRequest, _ = Depends(require_api_key)):
     t0 = time.perf_counter()
     
     result = score_one(req.applicant)
