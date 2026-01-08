@@ -1,16 +1,16 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Any, Dict, Optional 
 import time
 import logging
-from requests import Request
 
 from risk_system.artifacts import load_artifacts, get_artifacts
 from risk_system.service import score_one
 from risk_system.exceptions import BadRequestError
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("risk_api")
 
 
@@ -42,7 +42,6 @@ async def bad_request_handler(request: Request, exc: BadRequestError):
         }
     )
 
-@app.exception_handler((KeyError, ValueError, TypeError))
 async def bad_input_handler(request: Request, exc: Exception):
     logger.info("Bad input: %s", exc, exc_info=True)
     return JSONResponse(
@@ -52,6 +51,10 @@ async def bad_input_handler(request: Request, exc: Exception):
             "message": "Invalid applicant payload.",
         }
     )
+
+app.add_exception_handler(KeyError, bad_input_handler)
+app.add_exception_handler(ValueError, bad_input_handler)
+app.add_exception_handler(TypeError, bad_input_handler)
 
 @app.exception_handler(Exception)
 async def unhandled_handler(request: Request, exc: Exception):

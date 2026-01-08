@@ -8,7 +8,7 @@ from risk_system.exceptions import BadRequestError
 def score_one(applicant: dict) -> dict:
     model, preprocessor, cfg_base, schema = get_artifacts()
 
-    required_features = list(schema["columns"].keys())
+    required_features = schema["columns"]
 
     missing = [f for f in required_features if f not in applicant]
     if missing:
