@@ -1,4 +1,8 @@
 
+metadata:
+  model_version: "risk-model-v0.1.0"
+  config_version: "base-2026-01-08"
+
 dataset:
   source: "csv"
   path: "data/raw/risk.csv"
